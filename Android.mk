@@ -20,6 +20,16 @@ ifeq ($(USES_DEVICE_GOOGLE_B1C1),true)
   subdir_makefiles=$(call first-makefiles-under,$(LOCAL_PATH))
   $(foreach mk,$(subdir_makefiles),$(info including $(mk) ...)$(eval include $(mk)))
 
+CM_LIBS := liblpmdeviceutils.so
+CM_SYMLINKS := $(addprefix $(TARGET_OUT)/app/ConnectivityMonitor/lib/arm64/,$(notdir $(CM_LIBS)))
+$(CM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "ConnectivityMonitor lib link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /system/lib64/$(notdir $@) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(CM_SYMLINKS)
+
 IMS_LIBS := libimscamera_jni.so libimsmedia_jni.so
 IMS_SYMLINKS := $(addprefix $(TARGET_OUT)/app/ims/lib/arm64/,$(notdir $(IMS_LIBS)))
 $(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
